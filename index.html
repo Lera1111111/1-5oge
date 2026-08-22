@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Шины — Математика без стресса</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="styles.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">∿</div><div><b>Математика без стресса</b><small>Интерактивный тренажёр · ОГЭ · Шины</small></div></div>
+  <button class="pill" onclick="app.goHome()">К началу</button>
+</header>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+    <div class="topline"><div class="crumb" id="crumb"></div><div class="progressText" id="progressText"></div></div>
+    <div class="bar"><div id="progressBar"></div></div>
+    <div id="app"></div>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
