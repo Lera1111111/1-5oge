@@ -76,7 +76,52 @@ if(st.type==='diagram')body=`<div class="card split">
 if(st.type==='drag'){let opts=shuffle([['ширина шины','B'],['высота боковины','H'],['диаметр диска','d'],['диаметр всего колеса','D']]);body=`<div class="card split"><div><div class="sectionTitle">Перетащи подписи</div><div class="dragBank">${opts.map(([t,v])=>`<div class="drag" draggable="true" data-v="${v}">${t}</div>`).join('')}</div><div class="dropGrid">${['B','H','d','D'].map(x=>`<div class="drop" data-a="${x}"><b>${x}</b><span>перетащи сюда</span></div>`).join('')}</div><div id="dragFb" class="feedback"></div></div><div class="figure"><img src="assets/fig2.png"><div class="cap">Пользуйся рисунком</div></div></div>`;setTimeout(initDrag,0)}
 if(st.type==='formulaTry'){body=`<div class="card split"><div><div class="sectionTitle">Посмотри, что находится «внутри» диаметра колеса</div><p>Что входит в полный диаметр D?</p><div class="builder"><div class="slot"></div><div class="op">+</div><div class="slot"></div><div class="op">+</div><div class="slot"></div></div><div class="tokenBank">${['H','d','H','B','2d'].map(x=>`<button class="token" data-v="${x}">${x}</button>`).join('')}</div><div id="formulaFb" class="feedback"></div><div id="formulaHelp"></div><div id="formulaResult"></div></div><div class="figure"><img src="assets/fig2.png"><div class="cap">Смотри на полный вертикальный диаметр D</div></div></div>`;setTimeout(initFormulaTry,0)}
 if(st.type==='radius')body=`<div class="card split"><div><div class="sectionTitle">Диаметр и радиус на рисунке</div><div class="figure"><img src="assets/fig2.png"><div class="cap">D — весь диаметр; R — половина диаметра</div></div><div class="mathBox">$$R=\\frac{D}{2}$$</div></div><div>${exerciseBlock('Диаметр колеса 640 мм. Найди радиус.','320','radiusPractice','мм','Раздели диаметр на 2.')}</div></div>`;
-if(st.type==='radiusDiff')body=`<div class="card split"><div><div class="sectionTitle">Сравниваем два колеса</div><div class="figure"><img src="assets/fig2.png"><div class="cap">Для каждого колеса R = D/2</div></div><div class="mathBox">$$D_1=640\\text{ мм},\\qquad D_2=660\\text{ мм}$$</div></div><div>${exerciseBlock('На сколько отличаются радиусы?','10','radiusDiff','мм','Сначала найди разность диаметров, потом раздели её на 2.')}</div></div>`;
+if(st.type==='radiusDiff')body=`
+<div class="card">
+
+  <div class="sectionTitle">Задание</div>
+
+  <p>
+    Даны два колеса.
+    Диаметр первого колеса
+    <b>D₁ = 640 мм</b>,
+    диаметр второго колеса
+    <b>D₂ = 660 мм</b>.
+  </p>
+
+  <p>
+    <b>На сколько миллиметров отличаются их радиусы?</b>
+  </p>
+
+  <div class="mathBox">
+    $$D_1=640\\text{ мм},\\qquad D_2=660\\text{ мм}$$
+  </div>
+
+  <div class="split">
+
+    <div>
+      <div class="figure">
+        <img src="assets/fig2.png">
+        <div class="cap">
+          Для каждого колеса:
+          \\(R=\\frac D2\\)
+        </div>
+      </div>
+    </div>
+
+    <div>
+      ${exerciseBlock(
+        'Найди разность радиусов.',
+        '10',
+        'radiusDiff',
+        'мм',
+        'Сначала найди разность диаметров, потом подумай, как связаны диаметр и радиус.'
+      )}
+    </div>
+
+  </div>
+
+</div>`;
 if(st.type==='newMark')body=`<div class="card"><div class="sectionTitle">205/55 R16</div><p>Заполни всё самостоятельно.</p><div class="formGrid"><div></div><div class="head">Что найти</div><div class="head">Твой ответ</div><div>1</div><div>Ширина B</div><div><input id="nmB"></div><div>2</div><div>55 — сколько процентов?</div><div><input id="nmp"></div><div>3</div><div>H, мм</div><div><input id="nmH"></div><div>4</div><div>Диаметр диска, дюймы</div><div><input id="nminch"></div><div>5</div><div>d, мм</div><div><input id="nmd"></div><div>6</div><div>D, мм</div><div><input id="nmD"></div><div>7</div><div>Как найти R?</div><div><input id="nmR" placeholder="например D/2"></div></div><div class="nav"><button class="btn primary" onclick="app.checkNewMark()">Проверить всё</button></div><div id="nmFb" class="feedback"></div></div>`;
 if(st.type==='introDone')body=`<div class="card"><div class="sectionTitle">Готово ✓</div><p>Ты разобрал маркировку, рисунок, диаметр и радиус. Теперь собираем эти действия в заданиях №1–5.</p></div>`;
 appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true);if(['inch','drag','formulaTry','radius','radiusDiff','newMark'].includes(st.type))setTimeout(()=>{if($('#nextBtn'))$('#nextBtn').disabled=true},0);updateChrome()}
