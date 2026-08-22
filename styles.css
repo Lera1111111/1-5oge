@@ -195,3 +195,52 @@ td.table-correct{
 .legendH{background:#fbeaf2;color:#b75f86}
 .legendd{background:#eaf6ef;color:#438b69}
 .legendD{background:#f0eafb;color:#7554c5}
+
+.figureMarked {
+  position: relative;
+}
+
+.figureOverlay {
+  position: absolute;
+  inset: 14px 14px 55px 14px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.figureOverlay > div {
+  position: absolute;
+  font-weight: 900;
+  font-size: 20px;
+  padding: 3px 7px;
+  border-radius: 9px;
+  background: white;
+}
+
+/* положение потом ещё доточим */
+.overlayB {
+  left: 38%;
+  bottom: 4%;
+  color: #416fae;
+  background: #eaf3ff !important;
+}
+
+.overlayH {
+  left: 5%;
+  top: 12%;
+  color: #b75f86;
+  background: #fbeaf2 !important;
+}
+
+.overlayd {
+  left: 5%;
+  top: 43%;
+  color: #438b69;
+  background: #eaf6ef !important;
+}
+
+.overlayD {
+  left: 0;
+  top: 34%;
+  color: #7554c5;
+  background: #f0eafb !important;
+}
