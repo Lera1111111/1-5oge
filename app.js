@@ -18,7 +18,7 @@ const introSteps=[
 {t:'С условием разобрались',l:'Теперь переходим к настоящим заданиям №1–5.',type:'introDone'}];
 const lessons={1:{t:'№1 · Работа с таблицей',steps:1},2:{t:'№2 · Высота боковины и разность радиусов',steps:1},3:{t:'№3 · Диаметр колеса',steps:1},4:{t:'№4 · Изменение диаметра',steps:1},5:{t:'№5 · Пробег за один оборот',steps:1}};
 function renderMath(){if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false})}
-function common(t,l,b,back=true,next=true,label='Дальше →'){return `<h1>${t}</h1><div class="lead">${l}</div>${b}<div class="nav">${back?'<button class="btn secondary" onclick="app.prev()">Назад</button>':'<span></span>'}${next?`<button id="nextBtn" class="btn primary" onclick="app.next()">${label}</button>`:''}</div>`}
+function common(t,l,b,back=true,next=true,label='Дальше →'){return `<h1>${t}</h1><div class="lead">${l}</div>${b}<div class="nav">${back?'<button class="btn secondary" onclick="window.goPrev()">Назад</button>':'<span></span>'}${next?`<button id="nextBtn" class="btn primary" onclick="window.goNext()">${label}</button>`:''}</div>`}
 function sidebarHtml(){let out='<div class="sideTitle">Шины</div>';let groups=[['Разбираем условие',[['Введение','intro',0],['Маркировка','intro',1],['Дюймы','intro',5],['Рисунок','intro',7],['Диаметр и радиус','intro',10]]],['Учимся решать',[[`Задание №1`,'lesson',1],[`Задание №2`,'lesson',2],[`Задание №3`,'lesson',3],[`Задание №4`,'lesson',4],[`Задание №5`,'lesson',5]]],['Проверяем себя',[[`Самостоятельный вариант`,'exam',1],[`Результат`,'results',1]]]];groups.forEach(([g,items])=>{out+=`<div class="sideGroup">${g}</div>`;items.forEach(([label,sec,val])=>{let a=false,d=false;if(sec==='intro'){a=state.section==='intro'&&state.intro>=val&&state.intro<val+4;d=state.section!=='intro'||state.intro>val}if(sec==='lesson'){a=state.section==='lesson'&&state.lesson===val;d=(state.section==='lesson'&&state.lesson>val)||['exam','results'].includes(state.section)}if(sec==='exam'){a=state.section==='exam';d=state.section==='results'}if(sec==='results')a=state.section==='results';out+=`<div class="sideItem ${a?'active':''} ${d?'done':''}">${label}</div>`})});return out}
 function updateChrome(){sidebar.innerHTML=sidebarHtml();renderMath()}
 function ogeBase(call=null){return `<div class="stage card" id="ogeStage"><svg id="arrowLayer" class="arrowLayer"><defs><marker id="arrowHead" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#8b68d2"></path></marker></defs><path id="arrowPath" d="" fill="none" stroke="#8b68d2" stroke-width="3" marker-end="url(#arrowHead)"></path></svg><div class="grid2"><div class="ogeText"><p>Автомобильное колесо представляет из себя металлический диск с установленной на него резиновой шиной. Диаметр диска совпадает с диаметром внутреннего отверстия в шине.</p><p>Для маркировки автомобильных шин применяется единая система обозначений. Например, <span id="m195" class="mark">195</span>/<span id="m65" class="mark">65</span> <span id="mR" class="mark">R</span><span id="m15" class="mark">15</span>. Первое число означает ширину шины в миллиметрах (размер B на рис. 2). Второе число — высота боковины H в процентах от ширины шины.</p><p>Например, шина 195/65 R15 имеет B=195 мм и H=195·0,65=126,75 мм.</p><p>Буква R означает, что шина имеет радиальную конструкцию.</p><p>За буквой R следует диаметр диска d в дюймах (<span id="inch" class="mark">в одном дюйме 25,4 мм</span>). Общий диаметр колеса D можно найти, зная диаметр диска и высоту боковины.</p><p>Завод устанавливает на автомобили колёса с шинами 195/60 R16.</p></div><div><div class="figure"><img src="assets/fig1.png"><div class="cap">Рис. 1 · маркировка на шине</div></div><div class="figure" id="fig2box"><img src="assets/fig2.png"><div class="cap">Рис. 2 · B, H, d и D</div></div></div></div>${call?`<div id="callout" class="callout"><h3>${call.head}</h3><p>${call.text}</p>${call.formula?`<div class="formula">$$${call.formula}$$</div>`:''}${call.warn?`<div class="warn">${call.warn}</div>`:''}</div>`:''}</div>`}
@@ -30,7 +30,46 @@ function renderIntro(){let st=introSteps[state.intro];crumb.textContent='Шин�
 if(st.type==='read')body=ogeBase()+`<div class="card" style="margin-top:18px"><b>Что ты считаешь важным в этом условии?</b><textarea style="width:100%;min-height:100px;margin-top:10px;border:1px solid var(--line);border-radius:16px;padding:14px" placeholder="Числа, обозначения, факты или мысли..."></textarea><div class="mini">Ответ не проверяется.</div></div>`;
 if(st.type==='call'){body=ogeBase(st);setTimeout(()=>positionCallout(st.mark,st.target),30)}
 if(st.type==='inch')body=ogeBase()+exerciseBlock('16 дюймов = ? мм','406.4','inchPractice','мм','Умножь 16 на 25,4.');
-if(st.type==='diagram')body=`<div class="card split"><div><div class="sectionTitle">Смотрим на рисунок, а не запоминаем его</div><div class="stepEq"><b>B — ширина шины</b><span class="why">Размер поперёк шины.</span></div><div class="stepEq"><b>H — высота боковины</b><span class="why">От края диска до внешнего края шины.</span></div><div class="stepEq"><b>d — диаметр диска</b><span class="why">Внутренний диаметр.</span></div><div class="stepEq"><b>D — диаметр всего колеса</b><span class="why">Полный внешний диаметр.</span></div></div><div class="figure"><img src="assets/fig2.png"><div class="cap">Рис. 2</div></div></div>`;
+if(st.type==='diagram')body=`<div class="card split">
+<div>
+  <div class="sectionTitle">Смотрим на рисунок, а не запоминаем его</div>
+
+  <div class="measureInfo measureB">
+    <div class="measureLetter">B</div>
+    <div><b>B — ширина шины</b><span class="why">Размер поперёк шины.</span></div>
+  </div>
+
+  <div class="measureInfo measureH">
+    <div class="measureLetter">H</div>
+    <div><b>H — высота боковины</b><span class="why">От края диска до внешнего края шины.</span></div>
+  </div>
+
+  <div class="measureInfo measured">
+    <div class="measureLetter">d</div>
+    <div><b>d — диаметр диска</b><span class="why">Внутренний диаметр.</span></div>
+  </div>
+
+  <div class="measureInfo measureD">
+    <div class="measureLetter">D</div>
+    <div><b>D — диаметр всего колеса</b><span class="why">Полный внешний диаметр.</span></div>
+  </div>
+
+  <div class="mini" style="margin-top:14px">
+    Цвет обозначения слева совпадает с цветом его пояснения — так проще связывать величины на рисунке.
+  </div>
+</div>
+
+<div class="figure">
+  <img src="assets/fig2.png">
+  <div class="measureLegend">
+    <span class="legendB">B</span>
+    <span class="legendH">H</span>
+    <span class="legendd">d</span>
+    <span class="legendD">D</span>
+  </div>
+  <div class="cap">Рис. 2</div>
+</div>
+</div>`;
 if(st.type==='drag'){let opts=shuffle([['ширина шины','B'],['высота боковины','H'],['диаметр диска','d'],['диаметр всего колеса','D']]);body=`<div class="card split"><div><div class="sectionTitle">Перетащи подписи</div><div class="dragBank">${opts.map(([t,v])=>`<div class="drag" draggable="true" data-v="${v}">${t}</div>`).join('')}</div><div class="dropGrid">${['B','H','d','D'].map(x=>`<div class="drop" data-a="${x}"><b>${x}</b><span>перетащи сюда</span></div>`).join('')}</div><div id="dragFb" class="feedback"></div></div><div class="figure"><img src="assets/fig2.png"><div class="cap">Пользуйся рисунком</div></div></div>`;setTimeout(initDrag,0)}
 if(st.type==='formulaTry'){body=`<div class="card split"><div><div class="sectionTitle">Посмотри, что находится «внутри» диаметра колеса</div><p>Что входит в полный диаметр D?</p><div class="builder"><div class="slot"></div><div class="op">+</div><div class="slot"></div><div class="op">+</div><div class="slot"></div></div><div class="tokenBank">${['H','d','H','B','2d'].map(x=>`<button class="token" data-v="${x}">${x}</button>`).join('')}</div><div id="formulaFb" class="feedback"></div><div id="formulaHelp"></div><div id="formulaResult"></div></div><div class="figure"><img src="assets/fig2.png"><div class="cap">Смотри на полный вертикальный диаметр D</div></div></div>`;setTimeout(initFormulaTry,0)}
 if(st.type==='radius')body=`<div class="card split"><div><div class="sectionTitle">Диаметр и радиус на рисунке</div><div class="figure"><img src="assets/fig2.png"><div class="cap">D — весь диаметр; R — половина диаметра</div></div><div class="mathBox">$$R=\\frac{D}{2}$$</div></div><div>${exerciseBlock('Диаметр колеса 640 мм. Найди радиус.','320','radiusPractice','мм','Раздели диаметр на 2.')}</div></div>`;
@@ -109,4 +148,10 @@ const examQs={1:{q:'Для дисков диаметром 16 дюймов на�
 function renderExam(){crumb.textContent='Шины · Решаю самостоятельно';progressText.textContent='Самостоятельный вариант';progressBar.style.width='100%';let q=examQs[state.examQ],saved=state.examAnswers[state.examQ]??'';let body=`<div class="examLayout">${examCondition()}<div><div class="qnav">${[1,2,3,4,5].map(n=>`<button class="${state.examQ===n?'active':''} ${state.examAnswers[n]!==undefined?'done':''}" onclick="app.examGoto(${n})">№${n}</button>`).join('')}</div><div class="card"><span class="chip">Задание №${state.examQ}</span><h2>${q.q}</h2><div class="answerRow"><input id="examInput" value="${saved}"><span>${q.u}</span><button class="hintBtn" onclick="app.examHint()">Подсказка</button></div><div id="examHint"></div></div><div class="nav"><button class="btn secondary" onclick="app.examPrev()">← Предыдущее</button><button class="btn primary" onclick="app.saveExam()">${state.examQ<5?'Сохранить и дальше →':'Завершить вариант'}</button></div></div></div>`;appEl.innerHTML=common('Решаю самостоятельно','Текст, рисунок и таблица всегда рядом.',body,false,false);updateChrome()}
 function renderResults(){let score=0;[1,2,3,4,5].forEach(n=>{if(norm(state.examAnswers[n])===norm(examQs[n].a))score++});crumb.textContent='Шины · Результат';progressText.textContent=`${score} из 5`;progressBar.style.width='100%';let rows=[1,2,3,4,5].map(n=>{let ok=norm(state.examAnswers[n])===norm(examQs[n].a);return `<div class="reviewRow"><div><b>№${n}</b> <span class="${ok?'good':'bad'}">${ok?'✓ Верно':'✕ Ошибка'}</span>${state.examReviewed[n]?'<span class="reviewTag">исправлялось после разбора</span>':''}</div>${ok?'':`<button class="btn secondary" onclick="app.review(${n})">Разобрать</button>`}</div>`}).join('');appEl.innerHTML=common(score===5?'Шины пройдены ✓':'Есть что разобрать',`Результат: ${score} из 5`,`<div class="card"><div class="score">${score} из 5</div>${rows}</div>`,false,false);updateChrome()}
 const app={render(){if(state.section==='intro')renderIntro();if(state.section==='lesson')renderLesson();if(state.section==='exam')renderExam();if(state.section==='results')renderResults()},goHome(){state.section='intro';state.intro=0;state.reviewTarget=null;this.render()},prev(){if(state.section==='intro'&&state.intro>0){state.intro--;this.render();return}if(state.section==='lesson'){if(state.lessonStep>0)state.lessonStep--;else if(state.lesson>1){state.lesson--;state.lessonStep=lessons[state.lesson].steps-1}else{state.section='intro';state.intro=introSteps.length-1}this.render()}},next(){if(state.section==='intro'){if(state.intro<introSteps.length-1){state.intro++;this.render()}else{state.section='lesson';state.lesson=1;state.lessonStep=0;this.render()}return}if(state.section==='lesson'){let L=lessons[state.lesson];if(state.lessonStep<L.steps-1){state.lessonStep++;this.render();return}if(state.reviewTarget===state.lesson){let q=state.reviewTarget;state.reviewTarget=null;state.section='exam';state.examQ=q;state.examReviewed[q]=true;this.render();return}if(state.lesson<5){state.lesson++;state.lessonStep=0;this.render()}else{state.section='exam';state.examQ=1;this.render()}}},checkExercise,showHint,checkNewMark,tableClick,toggleExplain,checkL3,nextL3Hint,checkL4,nextL4Hint,openLesson(n){state.section='lesson';state.lesson=n;state.lessonStep=0;state.reviewTarget=null;this.render()},examGoto(n){state.examAnswers[state.examQ]=$('#examInput')?.value??state.examAnswers[state.examQ];state.examQ=n;this.render()},examPrev(){state.examAnswers[state.examQ]=$('#examInput')?.value??state.examAnswers[state.examQ];if(state.examQ>1)state.examQ--;this.render()},saveExam(){state.examAnswers[state.examQ]=$('#examInput').value;if(state.examQ<5){state.examQ++;this.render()}else{state.section='results';this.render()}},examHint(){let k='e'+state.examQ,n=(state.hints[k]||0)+1;state.hints[k]=n;let a=examQs[state.examQ].h;$('#examHint').innerHTML=`<div class="hint">${a[Math.min(n-1,a.length-1)]}</div>`;renderMath()},review(n){state.reviewTarget=n;state.section='lesson';state.lesson=n;state.lessonStep=0;this.render()}};
-window.addEventListener('DOMContentLoaded',()=>app.render());
+window.app = app;
+window.addEventListener('DOMContentLoaded',()=>window.app.render());
+
+
+// v4 navigation safety: explicit global functions for inline controls.
+window.goNext = () => window.app.next();
+window.goPrev = () => window.app.prev();
