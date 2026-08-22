@@ -59,14 +59,17 @@ if(st.type==='diagram')body=`<div class="card split">
   </div>
 </div>
 
-<div class="figure">
-  <img src="assets/fig2.png">
-  <div class="measureLegend">
-    <span class="legendB">B</span>
-    <span class="legendH">H</span>
-    <span class="legendd">d</span>
-    <span class="legendD">D</span>
+<div class="figure figureMarked">
+  <div class="figureOverlay">
+    <div class="overlayB">B</div>
+    <div class="overlayH">H</div>
+    <div class="overlayd">d</div>
+    <div class="overlayD">D</div>
   </div>
+
+  <img src="assets/fig2.png">
+
+  <div class="measureLegend">
   <div class="cap">Рис. 2</div>
 </div>
 </div>`;
