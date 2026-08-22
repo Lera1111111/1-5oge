@@ -124,7 +124,29 @@ if(st.type==='radiusDiff')body=`
 </div>`;
 if(st.type==='newMark')body=`<div class="card"><div class="sectionTitle">205/55 R16</div><p>Заполни всё самостоятельно.</p><div class="formGrid"><div></div><div class="head">Что найти</div><div class="head">Твой ответ</div><div>1</div><div>Ширина B</div><div><input id="nmB"></div><div>2</div><div>55 — сколько процентов?</div><div><input id="nmp"></div><div>3</div><div>H, мм</div><div><input id="nmH"></div><div>4</div><div>Диаметр диска, дюймы</div><div><input id="nminch"></div><div>5</div><div>d, мм</div><div><input id="nmd"></div><div>6</div><div>D, мм</div><div><input id="nmD"></div><div>7</div><div>Как найти R?</div><div><input id="nmR" placeholder="например D/2"></div></div><div class="nav"><button class="btn primary" onclick="app.checkNewMark()">Проверить всё</button></div><div id="nmFb" class="feedback"></div></div>`;
 if(st.type==='introDone')body=`<div class="card"><div class="sectionTitle">Готово ✓</div><p>Ты разобрал маркировку, рисунок, диаметр и радиус. Теперь собираем эти действия в заданиях №1–5.</p></div>`;
-appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true);if(['inch','drag','formulaTry','radius','radiusDiff','newMark'].includes(st.type))setTimeout(()=>{if($('#nextBtn'))$('#nextBtn').disabled=true},0);updateChrome()}
+appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true); if (st.type === 'introDone') {
+
+  const backBtn = document.querySelector('.nav .secondary');
+  const nextBtn = document.querySelector('#nextBtn');
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      state.intro--;
+      renderIntro();
+    };
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = false;
+
+    nextBtn.onclick = () => {
+      state.section = 'lesson';
+      state.lesson = 1;
+      state.lessonStep = 0;
+      renderLesson();
+    };
+  }
+}if(['inch','drag','formulaTry','radius','radiusDiff','newMark'].includes(st.type))setTimeout(()=>{if($('#nextBtn'))$('#nextBtn').disabled=true},0);updateChrome()}
 let dragged=null;function initDrag(){document.querySelectorAll('.drag').forEach(x=>x.ondragstart=()=>dragged=x);document.querySelectorAll('.drop').forEach(z=>{z.ondragover=e=>e.preventDefault();z.ondrop=e=>{e.preventDefault();if(!dragged)return;if(z.dataset.a===dragged.dataset.v){z.classList.add('good');z.querySelector('span').textContent=dragged.textContent;dragged.classList.add('used');if([...document.querySelectorAll('.drop')].every(d=>d.classList.contains('good'))){$('#dragFb').textContent='Верно!';$('#dragFb').className='feedback ok';$('#nextBtn').disabled=false}}else $('#dragFb').textContent='Пока не сюда. Посмотри на рисунок.';dragged=null}})}
 function initFormulaTry(){let vals=[],attempts=0;document.querySelectorAll('.token').forEach(t=>t.onclick=()=>{if(t.classList.contains('used')||vals.length>=3)return;vals.push(t.dataset.v);t.classList.add('used');document.querySelectorAll('.slot')[vals.length-1].textContent=t.dataset.v;if(vals.length===3){if(vals.join('|')==='H|d|H'){$('#formulaFb').textContent='Да!';$('#formulaFb').className='feedback ok';$('#formulaResult').innerHTML='<div class="resultBox">$$D=H+d+H$$ ↓ $$D=d+2H$$</div>';$('#nextBtn').disabled=false;renderMath()}else{attempts++;$('#formulaFb').textContent='Пока не получилось.';$('#formulaHelp').innerHTML=`<div class="hint">${attempts===1?'Посмотри на рисунок сверху вниз: боковина, диск, боковина.':'Подсказка: $$D=H+d+H$$'}</div>`;setTimeout(()=>{vals=[];document.querySelectorAll('.slot').forEach(s=>s.textContent='');document.querySelectorAll('.token').forEach(t=>t.classList.remove('used'));renderMath()},650)}}})}
 function checkExercise(id,ans){let el=document.getElementById(id),fb=document.getElementById(id+'Fb');if(norm(el.value)===norm(ans)){fb.textContent='Верно!';fb.className='feedback ok';if($('#nextBtn'))$('#nextBtn').disabled=false}else{fb.textContent='Пока не получилось. Попробуй ещё раз.';fb.className='feedback'}}
