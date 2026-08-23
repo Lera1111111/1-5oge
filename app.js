@@ -426,8 +426,7 @@ function checkRadiusFormula(button, correct) {
       btn.classList.remove('correct', 'wrong');
     });
 
-  const fb =
-    document.getElementById('radiusFormulaFb');
+  const fb = document.getElementById('radiusFormulaFb');
 
   if (correct) {
 
@@ -436,34 +435,11 @@ function checkRadiusFormula(button, correct) {
     fb.textContent =
       'Верно! Радиус — половина диаметра.';
 
-    fb.className =
-      'feedback ok';
-
-    state.radiusFormulaCorrect = true;
-    function checkRadiusFormula(button, correct) {
-
-  document
-    .querySelectorAll('.choiceRow .choice')
-    .forEach(btn => {
-      btn.classList.remove('correct', 'wrong');
-    });
-
-  const fb =
-    document.getElementById('radiusFormulaFb');
-
-  if (correct) {
-
-    button.classList.add('correct');
-
-    fb.textContent =
-      'Верно! Радиус — половина диаметра.';
-
-    fb.className =
-      'feedback ok';
+    fb.className = 'feedback ok';
 
     state.radiusFormulaCorrect = true;
 
-    checkNewMark(); // ← ВОТ ЭТУ СТРОКУ ДОБАВИТЬ
+    checkNewMark();
 
   } else {
 
@@ -472,22 +448,7 @@ function checkRadiusFormula(button, correct) {
     fb.textContent =
       'Пока не так. Вспомни: диаметр состоит из двух радиусов.';
 
-    fb.className =
-      'feedback';
-
-    state.radiusFormulaCorrect = false;
-  }
-}
-
-  } else {
-
-    button.classList.add('wrong');
-
-    fb.textContent =
-      'Пока не так. Вспомни: диаметр состоит из двух радиусов.';
-
-    fb.className =
-      'feedback';
+    fb.className = 'feedback';
 
     state.radiusFormulaCorrect = false;
   }
@@ -508,20 +469,18 @@ function checkNewMark(){
     input.style.borderColor=test(input.value)?"#9dcab0":"#d99bb4";
     if(!test(input.value))ok=false;
   });
-  if (!state.radiusFormulaCorrect) {
-  ok = false;
-}
-const fb = $("#nmFb");
-
-if (ok && !state.radiusFormulaCorrect) {
-  fb.textContent = "Числа верные ✓ Теперь выбери формулу для радиуса.";
-  fb.className = "feedback";
-  return;
-}
+  const fb = $("#nmFb");
 
 if (!ok) {
   fb.textContent =
     "Есть ошибка. Красной рамкой отмечено поле, которое нужно проверить.";
+  fb.className = "feedback";
+  return;
+}
+
+if (!state.radiusFormulaCorrect) {
+  fb.textContent =
+    "Числа верные ✓ Теперь выбери формулу для радиуса.";
   fb.className = "feedback";
   return;
 }
@@ -532,7 +491,7 @@ fb.className = "feedback ok";
 if ($("#nextBtn")) {
   $("#nextBtn").disabled = false;
 }
-
+}
 const tableData = {
   widths: [175,185,195,205,215,225],
   cols: [14,15,16,17],
