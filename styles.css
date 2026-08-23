@@ -244,3 +244,41 @@ td.table-correct{
   color: #7554c5;
   background: #f0eafb !important;
 }
+
+.figureMarked {
+  position: relative;
+}
+
+.figureMarked img {
+  display: block;
+  width: 100%;
+}
+
+.measureSvg {
+  position: absolute;
+  inset: 14px;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  pointer-events: none;
+}
+
+.measureSvg line {
+  stroke-width: 4;
+}
+
+.lineB { stroke: #4f86c6; }
+.lineH { stroke: #c96b93; }
+.lined { stroke: #4b9874; }
+.lineD { stroke: #7554c5; }
+
+.measureSvg text {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.textB { fill: #4f86c6; }
+.textH { fill: #c96b93; }
+.textd { fill: #4b9874; }
+.textD { fill: #7554c5; }
