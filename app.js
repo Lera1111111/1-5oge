@@ -291,8 +291,165 @@ if(st.type==='radius')body=`
   </div>
 
 </div>`;
-if(st.type==='newMark')body=`<div class="card"><div class="sectionTitle">205/55 R16</div><p>Заполни всё самостоятельно.</p><div class="formGrid"><div></div><div class="head">Что найти</div><div class="head">Твой ответ</div><div>1</div><div>Ширина B</div><div><input id="nmB"></div><div>2</div><div>55 — сколько процентов?</div><div><input id="nmp"></div><div>3</div><div>H, мм</div><div><input id="nmH"></div><div>4</div><div>Диаметр диска, дюймы</div><div><input id="nminch"></div><div>5</div><div>d, мм</div><div><input id="nmd"></div><div>6</div><div>D, мм</div><div><input id="nmD"></div><div>7</div><div>Как найти R?</div><div><input id="nmR" placeholder="например D/2"></div></div><div class="nav"><button class="btn primary" onclick="app.checkNewMark()">Проверить всё</button></div><div id="nmFb" class="feedback"></div></div>`;
-if(st.type==='introDone')body=`<div class="card"><div class="sectionTitle">Готово ✓</div><p>Ты разобрал маркировку, рисунок, диаметр и радиус. Теперь собираем эти действия в заданиях №1–5.</p></div>`;
+if(st.type==='newMark')body=`
+<div class="card">
+
+  <div class="sectionTitle">
+    Новая маркировка: 205/55 R16
+  </div>
+
+  <p>
+    Теперь попробуй самостоятельно разобрать новую маркировку
+    и найти основные размеры колеса.
+  </p>
+
+  <div class="checkGrid">
+
+    <div class="row">
+      <div>
+        <b>1. Какова ширина шины?</b>
+      </div>
+
+      <input
+        id="nmB"
+        placeholder="Ответ"
+      >
+
+      <span>мм</span>
+    </div>
+
+
+    <div class="row">
+      <div>
+        <b>2. Какую часть от ширины составляет высота боковины?</b>
+        <div class="mini">
+          Посмотри на второе число маркировки.
+        </div>
+      </div>
+
+      <input
+        id="nmp"
+        placeholder="Ответ"
+      >
+
+      <span>%</span>
+    </div>
+
+
+    <div class="row">
+      <div>
+        <b>3. Найди высоту боковины H.</b>
+      </div>
+
+      <input
+        id="nmH"
+        placeholder="Ответ"
+      >
+
+      <span>мм</span>
+    </div>
+
+
+    <div class="row">
+      <div>
+        <b>4. Какой диаметр диска указан в маркировке?</b>
+      </div>
+
+      <input
+        id="nminch"
+        placeholder="Ответ"
+      >
+
+      <span>дюймов</span>
+    </div>
+
+
+    <div class="row">
+      <div>
+        <b>5. Переведи диаметр диска в миллиметры.</b>
+      </div>
+
+      <input
+        id="nmd"
+        placeholder="Ответ"
+      >
+
+      <span>мм</span>
+    </div>
+
+
+    <div class="row">
+      <div>
+        <b>6. Найди полный диаметр колеса D.</b>
+      </div>
+
+      <input
+        id="nmD"
+        placeholder="Ответ"
+      >
+
+      <span>мм</span>
+    </div>
+
+  </div>
+
+
+  <div class="lessonSection">
+
+    <div class="sectionTitle">
+      7. Как найти радиус, если известен диаметр?
+    </div>
+
+    <div class="choiceRow">
+
+      <button
+        class="choice"
+        onclick="app.checkRadiusFormula(this, false)"
+      >
+        \\(R=D\\cdot2\\)
+      </button>
+
+      <button
+        class="choice"
+        onclick="app.checkRadiusFormula(this, true)"
+      >
+        \\(R=\\frac{D}{2}\\)
+      </button>
+
+      <button
+        class="choice"
+        onclick="app.checkRadiusFormula(this, false)"
+      >
+        \\(R=D+2\\)
+      </button>
+
+    </div>
+
+    <div
+      id="radiusFormulaFb"
+      class="feedback"
+    ></div>
+
+  </div>
+
+
+  <div class="nav">
+
+    <button
+      class="btn primary"
+      onclick="app.checkNewMark()"
+    >
+      Проверить ответы
+    </button>
+
+  </div>
+
+  <div
+    id="nmFb"
+    class="feedback"
+  ></div>
+
+</div>`;if(st.type==='introDone')body=`<div class="card"><div class="sectionTitle">Готово ✓</div><p>Ты разобрал маркировку, рисунок, диаметр и радиус. Теперь собираем эти действия в заданиях №1–5.</p></div>`;
 appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true); if (st.type === 'introDone') {
 
   const backBtn = document.querySelector('.nav .secondary');
@@ -320,6 +477,42 @@ let dragged=null;function initDrag(){document.querySelectorAll('.drag').forEach(
 function initFormulaTry(){let vals=[],attempts=0;document.querySelectorAll('.token').forEach(t=>t.onclick=()=>{if(t.classList.contains('used')||vals.length>=3)return;vals.push(t.dataset.v);t.classList.add('used');document.querySelectorAll('.slot')[vals.length-1].textContent=t.dataset.v;if(vals.length===3){if(vals.join('|')==='H|d|H'){$('#formulaFb').textContent='Да!';$('#formulaFb').className='feedback ok';$('#formulaResult').innerHTML='<div class="resultBox">$$D=H+d+H$$ ↓ $$D=d+2H$$</div>';$('#nextBtn').disabled=false;renderMath()}else{attempts++;$('#formulaFb').textContent='Пока не получилось.';$('#formulaHelp').innerHTML=`<div class="hint">${attempts===1?'Посмотри на рисунок сверху вниз: боковина, диск, боковина.':'Подсказка: $$D=H+d+H$$'}</div>`;setTimeout(()=>{vals=[];document.querySelectorAll('.slot').forEach(s=>s.textContent='');document.querySelectorAll('.token').forEach(t=>t.classList.remove('used'));renderMath()},650)}}})}
 function checkExercise(id,ans){let el=document.getElementById(id),fb=document.getElementById(id+'Fb');if(norm(el.value)===norm(ans)){fb.textContent='Верно!';fb.className='feedback ok';if($('#nextBtn'))$('#nextBtn').disabled=false}else{fb.textContent='Пока не получилось. Попробуй ещё раз.';fb.className='feedback'}}
 function showHint(id,text){document.getElementById(id+'Hint').innerHTML=`<div class="hint">${text}</div>`;renderMath()}
+function checkRadiusFormula(button, correct) {
+
+  document
+    .querySelectorAll('.choiceRow .choice')
+    .forEach(btn => {
+      btn.classList.remove('correct', 'wrong');
+    });
+
+  const fb =
+    document.getElementById('radiusFormulaFb');
+
+  if (correct) {
+
+    button.classList.add('correct');
+
+    fb.textContent =
+      'Верно! Радиус — половина диаметра.';
+
+    fb.className =
+      'feedback ok';
+
+    state.radiusFormulaCorrect = true;
+
+  } else {
+
+    button.classList.add('wrong');
+
+    fb.textContent =
+      'Пока не так. Вспомни: диаметр состоит из двух радиусов.';
+
+    fb.className =
+      'feedback';
+
+    state.radiusFormulaCorrect = false;
+  }
+}
 function checkNewMark(){
   let ok=true;
   const checks=[
