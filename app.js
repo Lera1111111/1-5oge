@@ -469,7 +469,7 @@ function checkNewMark(){
     input.style.borderColor=test(input.value)?"#9dcab0":"#d99bb4";
     if(!test(input.value))ok=false;
   });
-  const fb = $("#nmFb");
+const fb = $("#nmFb");
 
 if (!ok) {
   fb.textContent =
@@ -479,8 +479,7 @@ if (!ok) {
 }
 
 if (!state.radiusFormulaCorrect) {
-  fb.textContent =
-    "Числа верные ✓ Теперь выбери формулу для радиуса.";
+  fb.textContent = "Числа верные ✓ Теперь выбери формулу для радиуса.";
   fb.className = "feedback";
   return;
 }
