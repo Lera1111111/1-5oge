@@ -282,3 +282,103 @@ td.table-correct{
 .textH { fill: #c96b93; }
 .textd { fill: #4b9874; }
 .textD { fill: #7554c5; }
+
+if(st.type==='radius')body=`
+<div class="card split">
+
+  <div>
+    <div class="sectionTitle">
+      Диаметр и радиус на рисунке
+    </div>
+
+    <div class="figure radiusFigure">
+
+      <img src="assets/fig2.png">
+
+      <svg
+        class="radiusSvg"
+        viewBox="0 0 500 500"
+        preserveAspectRatio="none"
+      >
+
+        <!-- полный диаметр D -->
+        <line
+          x1="95"
+          y1="85"
+          x2="95"
+          y2="420"
+          class="diameterLine"
+        />
+
+        <text
+          x="112"
+          y="255"
+          class="diameterText"
+        >
+          D
+        </text>
+
+        <!-- центр колеса -->
+        <circle
+          cx="95"
+          cy="252"
+          r="7"
+          class="centerPoint"
+        />
+
+        <!-- радиус R -->
+        <line
+          x1="95"
+          y1="252"
+          x2="95"
+          y2="85"
+          class="radiusLine"
+        />
+
+        <text
+          x="122"
+          y="170"
+          class="radiusText"
+        >
+          R
+        </text>
+
+      </svg>
+
+      <div class="cap">
+        D — полный диаметр колеса; R — расстояние от центра до края
+      </div>
+
+    </div>
+
+    <div class="mathBox">
+      $$R=\\frac{D}{2}$$
+    </div>
+
+  </div>
+
+  <div>
+
+    <div class="sectionTitle">
+      Задание
+    </div>
+
+    <p>
+      Диаметр колеса равен
+      <b>640 мм</b>.
+      Найди радиус колеса.
+    </p>
+
+    ${
+      exerciseBlock(
+        'Радиус колеса:',
+        '320',
+        'radiusPractice',
+        'мм',
+        'Радиус — половина диаметра.'
+      )
+    }
+
+  </div>
+
+</div>`;
