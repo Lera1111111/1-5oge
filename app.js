@@ -440,6 +440,44 @@ function checkRadiusFormula(button, correct) {
       'feedback ok';
 
     state.radiusFormulaCorrect = true;
+    function checkRadiusFormula(button, correct) {
+
+  document
+    .querySelectorAll('.choiceRow .choice')
+    .forEach(btn => {
+      btn.classList.remove('correct', 'wrong');
+    });
+
+  const fb =
+    document.getElementById('radiusFormulaFb');
+
+  if (correct) {
+
+    button.classList.add('correct');
+
+    fb.textContent =
+      'Верно! Радиус — половина диаметра.';
+
+    fb.className =
+      'feedback ok';
+
+    state.radiusFormulaCorrect = true;
+
+    checkNewMark(); // ← ВОТ ЭТУ СТРОКУ ДОБАВИТЬ
+
+  } else {
+
+    button.classList.add('wrong');
+
+    fb.textContent =
+      'Пока не так. Вспомни: диаметр состоит из двух радиусов.';
+
+    fb.className =
+      'feedback';
+
+    state.radiusFormulaCorrect = false;
+  }
+}
 
   } else {
 
@@ -473,13 +511,1016 @@ function checkNewMark(){
   if (!state.radiusFormulaCorrect) {
   ok = false;
 }
-  const fb=$("#nmFb");
-  fb.textContent=ok?"Всё верно!":"Есть ошибка. Красной рамкой отмечено поле, которое нужно проверить.";
-  fb.className="feedback "+(ok?"ok":"");
-  if(ok && $("#nextBtn")) $("#nextBtn").disabled=false;
+const fb = $("#nmFb");
+
+if (ok && !state.radiusFormulaCorrect) {
+  fb.textContent = "Числа верные ✓ Теперь выбери формулу для радиуса.";
+  fb.className = "feedback";
+  return;
+}
+
+if (!ok) {
+  fb.textContent =
+    "Есть ошибка. Красной рамкой отмечено поле, которое нужно проверить.";
+  fb.className = "feedback";
+  return;
+}
+
+fb.textContent = "Всё верно!";
+fb.className = "feedback ok";
+
+if ($("#nextBtn")) {
+  $("#nextBtn").disabled = false;
+}
+
+const tableData = {
+  widths: [175,185,195,205,215,225],
+  cols: [14,15,16,17],
+
+  allowed: {
+    "175":[14,15],
+    "185":[14,15],
+    "195":[15,16],
+    "205":[15,16],
+    "215":[16,17],
+    "225":[17]
+  }
+};
+
+
+function tireTable(interactive=false,target=null,mode=null){
+
+  return `
+  <div class="tableWrap">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Ширина, мм</th>
+
+          ${tableData.cols
+            .map(c=>`<th>${c}"</th>`)
+            .join('')}
+
+        </tr>
+      </thead>
+
+
+      <tbody>
+
+        ${tableData.widths.map(w=>`
+
+          <tr>
+
+            <th>${w}</th>
+
+            ${tableData.cols.map(c=>{
+
+              const allowed =
+                tableData.allowed[w].includes(c);
+
+              return `
+                <td
+                  class="${allowed?'allowed':'dim'}"
+                  ${interactive
+                    ? `onclick="app.tableClick(
+                        ${w},
+                        ${c},
+                        this,
+                        '${mode}',
+                        ${target}
+                      )"`
+                    : ''
+                  }
+                >
+
+                  ${
+                    allowed
+                    ? `${w}/55 R${c}`
+                    : '—'
+                  }
+
+                </td>
+              `;
+
+            }).join('')}
+
+          </tr>
+
+        `).join('')}
+
+      </tbody>
+
+    </table>
+
+  </div>
+  `;
 }
 
 
+function lessonTabs(){
+
+  return `
+  <div class="choiceRow">
+
+    ${[1,2,3,4,5].map(n=>`
+
+      <button
+        class="choice ${state.lesson===n?'correct':''}"
+        onclick="app.openLesson(${n})"
+      >
+        №${n}
+      </button>
+
+    `).join('')}
+
+  </div>
+  `;
+}
+
+
+function renderLesson(){
+
+  const L = lessons[state.lesson];
+
+  crumb.textContent =
+    `Шины · Задание №${state.lesson}`;
+
+  progressText.textContent =
+    `Обучение №${state.lesson}`;
+
+  progressBar.style.width =
+    `${state.lesson/5*100}%`;
+
+  let body = lessonTabs();
+
+
+  /* =========================
+     ЗАДАНИЕ №1
+  ========================= */
+
+  if(state.lesson === 1){
+
+    body += `
+    <div class="card">
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Как работать с таблицей
+        </div>
+
+        <p>
+          Сначала смотри, какой диаметр диска дан в условии.
+          Затем находи соответствующий столбец.
+        </p>
+
+        <p>
+          После этого выбирай
+          <b>наименьшую</b> или
+          <b>наибольшую</b> разрешённую ширину —
+          в зависимости от вопроса.
+        </p>
+
+      </div>
+
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Пример 1 · наименьшая ширина
+        </div>
+
+        <p>
+          Для дисков диаметром
+          <b>16 дюймов</b>
+          найдите
+          <b>наименьшую</b>
+          разрешённую ширину шины.
+        </p>
+
+        ${tireTable(true,16,'min')}
+
+        <div
+          id="tableFb1"
+          class="feedback"
+        ></div>
+
+      </div>
+
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Пример 2 · наибольшая ширина
+        </div>
+
+        <p>
+          Для дисков диаметром
+          <b>15 дюймов</b>
+          найдите
+          <b>наибольшую</b>
+          разрешённую ширину шины.
+        </p>
+
+        ${tireTable(true,15,'max')}
+
+        <div
+          id="tableFb2"
+          class="feedback"
+        ></div>
+
+      </div>
+
+    </div>
+    `;
+  }
+
+
+  /* =========================
+     ЗАДАНИЕ №2
+  ========================= */
+
+  if(state.lesson === 2){
+
+    body += `
+    <div class="card">
+
+      <div class="lessonSection split">
+
+        <div>
+
+          <div class="sectionTitle">
+            Прототип А · высота боковины
+          </div>
+
+          <p>
+            Рассмотрим маркировку
+            <b>210/55 R17</b>.
+          </p>
+
+          <p>
+            <b>B</b> — ширина шины.
+            Это первое число маркировки.
+          </p>
+
+          <p>
+            <b>p</b> — процент.
+            Это второе число маркировки.
+          </p>
+
+          <p>
+            Высота боковины составляет
+            <b>p%</b> от ширины B.
+          </p>
+
+          <div class="mathBox">
+            $$H=
+            B\\cdot\\frac{p}{100}
+            =
+            \\frac{B\\cdot p}{100}$$
+          </div>
+
+          <p>
+            Например, для 210/55:
+          </p>
+
+          <div class="mathBox">
+            $$B=210,\\qquad p=55$$
+          </div>
+
+          ${
+            exerciseBlock(
+              'Для шины 210/55 R17 найди H.',
+              '115.5',
+              'l2h',
+              'мм',
+              'B = 210, p = 55. Используй формулу H = B·p/100.'
+            )
+          }
+
+        </div>
+
+
+        <div class="figure">
+
+          <img src="assets/fig2.png">
+
+          <div class="cap">
+            B — ширина шины,
+            H — высота боковины
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Прототип Б · разность радиусов
+        </div>
+
+
+        <div class="markPair">
+
+          <div class="markCard">
+            <small>1 · первая маркировка</small>
+            185/65 R16
+          </div>
+
+          <div class="markCard">
+            <small>2 · вторая маркировка</small>
+            215/55 R16
+          </div>
+
+        </div>
+
+
+        <p>
+          Диаметр диска у колёс одинаковый —
+          в обеих маркировках R16.
+        </p>
+
+
+        <div class="inlineFormula">
+
+          <span>
+            \\(R_2-R_1\\)
+          </span>
+
+
+          <span class="eq">
+            =
+            <button
+              onclick="app.toggleExplain('e1')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(
+            \\frac{D_2}{2}
+            -
+            \\frac{D_1}{2}
+            \\)
+          </span>
+
+
+          <span class="eq">
+            =
+            <button
+              onclick="app.toggleExplain('e2')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(
+            \\left(
+            \\frac d2+H_2
+            \\right)
+            -
+            \\left(
+            \\frac d2+H_1
+            \\right)
+            \\)
+          </span>
+
+
+          <span class="eq">
+            =
+            <button
+              onclick="app.toggleExplain('e3')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(
+            \\frac d2
+            +H_2
+            -
+            \\frac d2
+            -H_1
+            \\)
+          </span>
+
+
+          <span class="eq">
+            =
+            <button
+              onclick="app.toggleExplain('e4')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(H_2-H_1\\)
+          </span>
+
+        </div>
+
+
+        <div
+          id="e1"
+          class="explainBubble"
+        >
+          Каждый радиус — половина соответствующего диаметра:
+          \\(R=\\frac D2\\).
+        </div>
+
+
+        <div
+          id="e2"
+          class="explainBubble"
+        >
+          Так как
+          \\(D=d+2H\\),
+          то
+
+          \\[
+          R=
+          \\frac{d+2H}{2}
+          =
+          \\frac d2+H.
+          \\]
+        </div>
+
+
+        <div
+          id="e3"
+          class="explainBubble"
+        >
+          Раскрываем скобки.
+          Перед второй скобкой стоит минус,
+          поэтому знаки внутри неё меняются.
+        </div>
+
+
+        <div
+          id="e4"
+          class="explainBubble"
+        >
+          Одинаковые
+          \\(\\frac d2\\)
+          сокращаются,
+          потому что диаметр диска одинаковый.
+        </div>
+
+
+        <div class="mathBox">
+
+          $$R_2-R_1=H_2-H_1$$
+
+        </div>
+
+
+        <div class="split">
+
+          <div class="figure">
+
+            <img src="assets/fig2.png">
+
+            <div class="cap">
+              Смотри на H и d
+            </div>
+
+          </div>
+
+
+          <div>
+
+            ${
+              exerciseBlock(
+                'Для 185/65 R16 и 215/55 R16 найди разность радиусов.',
+                '2',
+                'l2diff',
+                'мм',
+                'Найди H₁ и H₂. Так как диски одинаковые, достаточно найти разность высот боковин.'
+              )
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    `;
+  }
+
+
+  /* =========================
+     ЗАДАНИЕ №3
+  ========================= */
+
+  if(state.lesson === 3){
+
+    body += `
+    <div class="card">
+
+      <div class="sectionTitle">
+        Задание №3
+      </div>
+
+      <p>
+        Дана шина с маркировкой
+        <b>195/60 R16</b>.
+      </p>
+
+      <p>
+        <b>
+          Найдите полный диаметр колеса D
+          в миллиметрах.
+        </b>
+      </p>
+
+      <div class="mathBox">
+        195/60 R16
+      </div>
+
+      <p>
+        Попробуй сначала решить полностью самостоятельно.
+      </p>
+
+
+      <div class="answerRow">
+
+        <input
+          id="l3final"
+          placeholder="D, мм"
+        >
+
+        <button
+          class="btn primary"
+          onclick="app.checkL3()"
+        >
+          Проверить
+        </button>
+
+        <button
+          class="hintBtn"
+          onclick="app.nextL3Hint()"
+        >
+          Подсказка
+        </button>
+
+      </div>
+
+
+      <div
+        id="l3Fb"
+        class="feedback"
+      ></div>
+
+      <div id="l3Hint"></div>
+
+
+      <div
+        class="figure"
+        style="margin-top:16px"
+      >
+
+        <img src="assets/fig2.png">
+
+        <div class="cap">
+          Если нужно — используй рисунок,
+          чтобы вспомнить D, d и H
+        </div>
+
+      </div>
+
+    </div>
+    `;
+  }
+
+
+  /* =========================
+     ЗАДАНИЕ №4
+  ========================= */
+
+  if(state.lesson === 4){
+
+    body += `
+    <div class="card">
+
+      <div class="sectionTitle">
+        Задание №4
+      </div>
+
+      <p>
+        На автомобиле были установлены шины
+        <b>195/60 R16</b>.
+      </p>
+
+      <p>
+        Их заменили на шины
+        <b>205/55 R16</b>.
+      </p>
+
+      <p>
+        <b>
+          Найдите, на сколько миллиметров
+          изменился полный диаметр колеса.
+        </b>
+      </p>
+
+
+      <div class="markPair">
+
+        <div class="markCard">
+          <small>1 · старая маркировка</small>
+          195/60 R16
+        </div>
+
+        <div class="markCard">
+          <small>2 · новая маркировка</small>
+          205/55 R16
+        </div>
+
+      </div>
+
+
+      <div class="formGrid">
+
+        <div></div>
+
+        <div class="head">
+          1 · старая
+        </div>
+
+        <div class="head">
+          2 · новая
+        </div>
+
+
+        <div>
+          H, мм
+        </div>
+
+        <div>
+          <input id="l4h1">
+        </div>
+
+        <div>
+          <input id="l4h2">
+        </div>
+
+
+        <div>
+          d, мм
+        </div>
+
+        <div>
+          <input id="l4d1">
+        </div>
+
+        <div>
+          <input id="l4d2">
+        </div>
+
+
+        <div>
+          D, мм
+        </div>
+
+        <div>
+          <input id="l4D1">
+        </div>
+
+        <div>
+          <input id="l4D2">
+        </div>
+
+      </div>
+
+
+      <div
+        class="answerRow"
+        style="margin-top:12px"
+      >
+
+        <input
+          id="l4diff"
+          placeholder="изменение, мм"
+        >
+
+        <button
+          class="btn primary"
+          onclick="app.checkL4()"
+        >
+          Проверить
+        </button>
+
+        <button
+          class="hintBtn"
+          onclick="app.nextL4Hint()"
+        >
+          Подсказка
+        </button>
+
+      </div>
+
+
+      <div
+        id="l4Fb"
+        class="feedback"
+      ></div>
+
+      <div id="l4Hint"></div>
+
+    </div>
+    `;
+  }
+
+
+  /* =========================
+     ЗАДАНИЕ №5
+  ========================= */
+
+  if(state.lesson === 5){
+
+    body += `
+    <div class="card">
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Задание №5 · пробег за один оборот
+        </div>
+
+        <p>
+          После замены шин изменился диаметр колеса.
+        </p>
+
+        <p>
+          <b>
+            Нужно определить,
+            на сколько процентов изменится расстояние,
+            которое автомобиль проходит
+            за один полный оборот колеса.
+          </b>
+        </p>
+
+      </div>
+
+
+      <div class="lessonSection gifBox">
+
+        <div class="sectionTitle">
+          Что такое один оборот?
+        </div>
+
+        <img src="assets/one_turn_correct.gif">
+
+        <p>
+          За один полный оборот колесо проходит расстояние,
+          равное длине своей окружности.
+        </p>
+
+      </div>
+
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Почему можно сравнивать диаметры
+        </div>
+
+
+        <div class="inlineFormula">
+
+          <span>
+            \\(
+            C_1=\\pi D_1,
+            \\quad
+            C_2=\\pi D_2
+            \\)
+          </span>
+
+
+          <span class="eq">
+            →
+            <button
+              onclick="app.toggleExplain('p1')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(
+            \\frac{C_2}{C_1}
+            =
+            \\frac{\\pi D_2}{\\pi D_1}
+            \\)
+          </span>
+
+
+          <span class="eq">
+            →
+            <button
+              onclick="app.toggleExplain('p2')"
+            >
+              ?
+            </button>
+          </span>
+
+
+          <span>
+            \\(
+            \\frac{C_2}{C_1}
+            =
+            \\frac{D_2}{D_1}
+            \\)
+          </span>
+
+        </div>
+
+
+        <div
+          id="p1"
+          class="explainBubble"
+        >
+          Сравниваем новый пробег за один оборот
+          со старым — то есть две длины окружности.
+        </div>
+
+
+        <div
+          id="p2"
+          class="explainBubble"
+        >
+          Множитель π одинаковый
+          в числителе и знаменателе,
+          поэтому он сокращается.
+        </div>
+
+      </div>
+
+
+      <div class="lessonSection">
+
+        <div class="sectionTitle">
+          Теперь проценты
+        </div>
+
+
+        <div class="inlineFormula">
+
+          <span>
+            \\(D_1\\to100\\%\\)
+          </span>
+
+          <span class="eq">
+            →
+            <button
+              onclick="app.toggleExplain('p3')"
+            >
+              ?
+            </button>
+          </span>
+
+          <span>
+            \\(D_2\\to x\\%\\)
+          </span>
+
+          <span class="eq">
+            →
+            <button
+              onclick="app.toggleExplain('p4')"
+            >
+              ?
+            </button>
+          </span>
+
+          <span>
+            \\(
+            \\frac{D_1}{D_2}
+            =
+            \\frac{100}{x}
+            \\)
+          </span>
+
+          <span class="eq">
+            →
+            <button
+              onclick="app.toggleExplain('p5')"
+            >
+              ?
+            </button>
+          </span>
+
+          <span>
+            \\(
+            x=
+            \\frac{D_2\\cdot100}{D_1}
+            \\)
+          </span>
+
+        </div>
+
+
+        <div
+          id="p3"
+          class="explainBubble"
+        >
+          Старое значение принимаем за 100%.
+        </div>
+
+        <div
+          id="p4"
+          class="explainBubble"
+        >
+          Ищем,
+          сколько процентов новое значение
+          составляет от старого.
+        </div>
+
+        <div
+          id="p5"
+          class="explainBubble"
+        >
+          Решаем полученную пропорцию относительно x.
+        </div>
+
+
+        <div class="hint">
+
+          Если x &lt; 100,
+          уменьшение равно
+          <b>100 − x</b>.
+
+          <br>
+
+          Если x &gt; 100,
+          увеличение равно
+          <b>x − 100</b>.
+
+        </div>
+
+      </div>
+
+
+      <div class="lessonSection">
+
+        ${
+          exerciseBlock(
+            'D₁ = 640,4 мм, D₂ = 631,9 мм. На сколько процентов уменьшится пробег? Округли до десятых.',
+            '1.3',
+            'l5',
+            '%',
+            'Сначала найди x = D₂·100/D₁, затем вычисли 100−x.'
+          )
+        }
+
+      </div>
+
+    </div>
+    `;
+  }
+
+
+  appEl.innerHTML = common(
+    L.t,
+    'Вся теория и практика этого номера собраны на одной странице.',
+    body,
+    true,
+    true,
+    'Дальше →'
+  );
+
+
+  if(
+    state.lesson===1 ||
+    state.lesson===3 ||
+    state.lesson===4 ||
+    state.lesson===5
+  ){
+    setTimeout(()=>{
+      if($('#nextBtn')){
+        $('#nextBtn').disabled=true;
+      }
+    },0);
+  }
+
+
+  updateChrome();
+}
 function tableClick(w,c,el,mode,target){
   const table=el.closest("table");
   table.querySelectorAll("td.table-wrong,td.table-correct,td.selected").forEach(x=>x.classList.remove("table-wrong","table-correct","selected"));
