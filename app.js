@@ -413,28 +413,7 @@ appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true); if (st.type === 'intr
     };
   }
 }
-
-  const backBtn = document.querySelector('.nav .secondary');
-  const nextBtn = document.querySelector('#nextBtn');
-
-  if (backBtn) {
-    backBtn.onclick = () => {
-      state.intro--;
-      renderIntro();
-    };
-  }
-
-  if (nextBtn) {
-    nextBtn.disabled = false;
-
-    nextBtn.onclick = () => {
-      state.section = 'lesson';
-      state.lesson = 1;
-      state.lessonStep = 0;
-      renderLesson();
-    };
-  }
-}if(['inch','drag','formulaTry','radius','radiusDiff','newMark'].includes(st.type))setTimeout(()=>{if($('#nextBtn'))$('#nextBtn').disabled=true},0);updateChrome()}
+if(['inch','drag','formulaTry','radius','radiusDiff','newMark'].includes(st.type))setTimeout(()=>{if($('#nextBtn'))$('#nextBtn').disabled=true},0);updateChrome()}
 let dragged=null;function initDrag(){document.querySelectorAll('.drag').forEach(x=>x.ondragstart=()=>dragged=x);document.querySelectorAll('.drop').forEach(z=>{z.ondragover=e=>e.preventDefault();z.ondrop=e=>{e.preventDefault();if(!dragged)return;if(z.dataset.a===dragged.dataset.v){z.classList.add('good');z.querySelector('span').textContent=dragged.textContent;dragged.classList.add('used');if([...document.querySelectorAll('.drop')].every(d=>d.classList.contains('good'))){$('#dragFb').textContent='Верно!';$('#dragFb').className='feedback ok';$('#nextBtn').disabled=false}}else $('#dragFb').textContent='Пока не сюда. Посмотри на рисунок.';dragged=null}})}
 function initFormulaTry(){let vals=[],attempts=0;document.querySelectorAll('.token').forEach(t=>t.onclick=()=>{if(t.classList.contains('used')||vals.length>=3)return;vals.push(t.dataset.v);t.classList.add('used');document.querySelectorAll('.slot')[vals.length-1].textContent=t.dataset.v;if(vals.length===3){if(vals.join('|')==='H|d|H'){$('#formulaFb').textContent='Да!';$('#formulaFb').className='feedback ok';$('#formulaResult').innerHTML='<div class="resultBox">$$D=H+d+H$$ ↓ $$D=d+2H$$</div>';$('#nextBtn').disabled=false;renderMath()}else{attempts++;$('#formulaFb').textContent='Пока не получилось.';$('#formulaHelp').innerHTML=`<div class="hint">${attempts===1?'Посмотри на рисунок сверху вниз: боковина, диск, боковина.':'Подсказка: $$D=H+d+H$$'}</div>`;setTimeout(()=>{vals=[];document.querySelectorAll('.slot').forEach(s=>s.textContent='');document.querySelectorAll('.token').forEach(t=>t.classList.remove('used'));renderMath()},650)}}})}
 function checkExercise(id,ans){let el=document.getElementById(id),fb=document.getElementById(id+'Fb');if(norm(el.value)===norm(ans)){fb.textContent='Верно!';fb.className='feedback ok';if($('#nextBtn'))$('#nextBtn').disabled=false}else{fb.textContent='Пока не получилось. Попробуй ещё раз.';fb.className='feedback'}}
@@ -491,6 +470,9 @@ function checkNewMark(){
     input.style.borderColor=test(input.value)?"#9dcab0":"#d99bb4";
     if(!test(input.value))ok=false;
   });
+  if (!state.radiusFormulaCorrect) {
+  ok = false;
+}
   const fb=$("#nmFb");
   fb.textContent=ok?"Всё верно!":"Есть ошибка. Красной рамкой отмечено поле, которое нужно проверить.";
   fb.className="feedback "+(ok?"ok":"");
