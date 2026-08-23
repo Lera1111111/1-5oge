@@ -398,6 +398,27 @@ if(st.type==='newMark')body=`
 
 </div>`;if(st.type==='introDone')body=`<div class="card"><div class="sectionTitle">Готово ✓</div><p>Ты разобрал маркировку, рисунок, диаметр и радиус. Теперь собираем эти действия в заданиях №1–5.</p></div>`;
 appEl.innerHTML=common(st.t,st.l,body,state.intro>0,true); if (st.type === 'introDone') {
+  if (st.type === 'introDone') {
+  const backBtn = document.querySelector('.nav .secondary');
+  const nextBtn = document.querySelector('#nextBtn');
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      state.intro--;
+      renderIntro();
+    };
+  }
+
+  if (nextBtn) {
+    nextBtn.disabled = false;
+    nextBtn.onclick = () => {
+      state.section = 'lesson';
+      state.lesson = 1;
+      state.lessonStep = 0;
+      renderLesson();
+    };
+  }
+}
 
   const backBtn = document.querySelector('.nav .secondary');
   const nextBtn = document.querySelector('#nextBtn');
