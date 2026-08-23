@@ -200,21 +200,6 @@ td.table-correct{
   position: relative;
 }
 
-.figureOverlay {
-  position: absolute;
-  inset: 14px 14px 55px 14px;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.figureOverlay > div {
-  position: absolute;
-  font-weight: 900;
-  font-size: 20px;
-  padding: 3px 7px;
-  border-radius: 9px;
-  background: white;
-}
 
 /* положение потом ещё доточим */
 .overlayB {
@@ -312,4 +297,60 @@ td.table-correct{
   color: #a35d78;
 }
 
-                 
+.overlayB,
+.overlayH,
+.overlayd,
+.overlayD {
+  position: absolute;
+  z-index: 5;
+  font-weight: 900;
+  font-size: 20px;
+  padding: 3px 8px;
+  border-radius: 10px;
+}                 
+.radiusFigure {
+  position: relative;
+}
+
+.radiusFigure img {
+  display: block;
+  width: 100%;
+}
+
+.radiusSvg {
+  position: absolute;
+  inset: 14px;
+  width: calc(100% - 28px);
+  height: calc(100% - 28px);
+  pointer-events: none;
+}
+
+.diameterLine {
+  stroke: #7554c5;
+  stroke-width: 5;
+}
+
+.radiusLine {
+  stroke: #4f86c6;
+  stroke-width: 6;
+}
+
+.centerPoint {
+  fill: #4f86c6;
+}
+
+.diameterText {
+  fill: #7554c5;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.radiusText {
+  fill: #4f86c6;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 900;
+}
