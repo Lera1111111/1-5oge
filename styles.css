@@ -382,3 +382,34 @@ if(st.type==='radius')body=`
   </div>
 
 </div>`;
+
+                 .choiceRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.choice {
+  border: 1px solid #cdbbea;
+  background: #fff;
+  color: var(--purple);
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.choice.correct {
+  background: #e8f4ed;
+  border-color: #9dcab0;
+  color: #3e8e6b;
+}
+
+.choice.wrong {
+  background: #f9e7ef;
+  border-color: #d99bb4;
+  color: #a35d78;
+}
+
+                 
