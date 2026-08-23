@@ -30,114 +30,61 @@ function renderIntro(){let st=introSteps[state.intro];crumb.textContent='Шин�
 if(st.type==='read')body=ogeBase()+`<div class="card" style="margin-top:18px"><b>Что ты считаешь важным в этом условии?</b><textarea style="width:100%;min-height:100px;margin-top:10px;border:1px solid var(--line);border-radius:16px;padding:14px" placeholder="Числа, обозначения, факты или мысли..."></textarea><div class="mini">Ответ не проверяется.</div></div>`;
 if(st.type==='call'){body=ogeBase(st);setTimeout(()=>positionCallout(st.mark,st.target),30)}
 if(st.type==='inch')body=ogeBase()+exerciseBlock('16 дюймов = ? мм','406.4','inchPractice','мм','Умножь 16 на 25,4.');
-if(st.type==='diagram')body=`<div class="card split">
-<div>
-  <div class="sectionTitle">Смотрим на рисунок, а не запоминаем его</div>
+if(st.type==='diagram')body=`
+<div class="card split">
 
-  <div class="measureInfo measureB">
-    <div class="measureLetter">B</div>
-    <div><b>B — ширина шины</b><span class="why">Размер поперёк шины.</span></div>
+  <div>
+    <div class="sectionTitle">Смотрим на рисунок, а не запоминаем его</div>
+
+    <div class="measureInfo measureB">
+      <div class="measureLetter">B</div>
+      <div>
+        <b>B — ширина шины</b>
+        <span class="why">Размер поперёк шины.</span>
+      </div>
+    </div>
+
+    <div class="measureInfo measureH">
+      <div class="measureLetter">H</div>
+      <div>
+        <b>H — высота боковины</b>
+        <span class="why">От края диска до внешнего края шины.</span>
+      </div>
+    </div>
+
+    <div class="measureInfo measured">
+      <div class="measureLetter">d</div>
+      <div>
+        <b>d — диаметр диска</b>
+        <span class="why">Внутренний диаметр.</span>
+      </div>
+    </div>
+
+    <div class="measureInfo measureD">
+      <div class="measureLetter">D</div>
+      <div>
+        <b>D — диаметр всего колеса</b>
+        <span class="why">Полный внешний диаметр.</span>
+      </div>
+    </div>
+
+    <div class="mini" style="margin-top:14px">
+      Цвет обозначения слева совпадает с цветом его пояснения.
+    </div>
   </div>
 
-  <div class="measureInfo measureH">
-    <div class="measureLetter">H</div>
-    <div><b>H — высота боковины</b><span class="why">От края диска до внешнего края шины.</span></div>
+  <div class="figure figureMarked">
+    <img src="assets/fig2.png">
+
+    <div class="overlayB">B</div>
+    <div class="overlayH">H</div>
+    <div class="overlayd">d</div>
+    <div class="overlayD">D</div>
+
+    <div class="cap">Рис. 2</div>
   </div>
 
-  <div class="measureInfo measured">
-    <div class="measureLetter">d</div>
-    <div><b>d — диаметр диска</b><span class="why">Внутренний диаметр.</span></div>
-  </div>
-
-  <div class="measureInfo measureD">
-    <div class="measureLetter">D</div>
-    <div><b>D — диаметр всего колеса</b><span class="why">Полный внешний диаметр.</span></div>
-  </div>
-
-  <div class="mini" style="margin-top:14px">
-    Цвет обозначения слева совпадает с цветом его пояснения — так проще связывать величины на рисунке.
-  </div>
-</div>
-
-<div class="figure figureMarked">
-  <div class="figureOverlay">
-    <div class="figure figureMarked">
-
-  <img src="assets/fig2.png">
-
-  <svg class="measureSvg"
-       viewBox="0 0 500 500"
-       preserveAspectRatio="none">
-
-    <defs>
-      <marker id="arrowB" markerWidth="8" markerHeight="8"
-              refX="4" refY="4" orient="auto">
-        <path d="M0,0 L8,4 L0,8 Z" fill="#4f86c6"/>
-      </marker>
-
-      <marker id="arrowH" markerWidth="8" markerHeight="8"
-              refX="4" refY="4" orient="auto">
-        <path d="M0,0 L8,4 L0,8 Z" fill="#c96b93"/>
-      </marker>
-
-      <marker id="arrowd" markerWidth="8" markerHeight="8"
-              refX="4" refY="4" orient="auto">
-        <path d="M0,0 L8,4 L0,8 Z" fill="#4b9874"/>
-      </marker>
-
-      <marker id="arrowD" markerWidth="8" markerHeight="8"
-              refX="4" refY="4" orient="auto">
-        <path d="M0,0 L8,4 L0,8 Z" fill="#7554c5"/>
-      </marker>
-    </defs>
-
-    <!-- B -->
-    <line x1="155" y1="445"
-          x2="255" y2="445"
-          class="lineB"
-          marker-start="url(#arrowB)"
-          marker-end="url(#arrowB)"/>
-
-    <text x="205" y="430" class="textB">B</text>
-
-    <!-- H сверху -->
-    <line x1="70" y1="80"
-          x2="70" y2="175"
-          class="lineH"
-          marker-start="url(#arrowH)"
-          marker-end="url(#arrowH)"/>
-
-    <!-- H снизу -->
-    <line x1="70" y1="330"
-          x2="70" y2="425"
-          class="lineH"
-          marker-start="url(#arrowH)"
-          marker-end="url(#arrowH)"/>
-
-    <text x="82" y="130" class="textH">H</text>
-
-    <!-- d -->
-    <line x1="105" y1="175"
-          x2="105" y2="330"
-          class="lined"
-          marker-start="url(#arrowd)"
-          marker-end="url(#arrowd)"/>
-
-    <text x="118" y="255" class="textd">d</text>
-
-    <!-- D -->
-    <line x1="35" y1="80"
-          x2="35" y2="425"
-          class="lineD"
-          marker-start="url(#arrowD)"
-          marker-end="url(#arrowD)"/>
-
-    <text x="48" y="255" class="textD">D</text>
-
-  </svg>
-
-</div>
-  </div>
+</div>`;
 
   <img src="assets/fig2.png">
 
