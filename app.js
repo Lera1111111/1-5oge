@@ -17,8 +17,17 @@ const introSteps=[
 {t:'Новая маркировка',l:'Теперь никаких готовых ответов — заполни всё сам.',type:'newMark'},
 {t:'С условием разобрались',l:'Теперь переходим к настоящим заданиям №1–5.',type:'introDone'}];
 const lessons={1:{t:'№1 · Работа с таблицей',steps:1},2:{t:'№2 · Высота боковины и разность радиусов',steps:1},3:{t:'№3 · Диаметр колеса',steps:1},4:{t:'№4 · Изменение диаметра',steps:1},5:{t:'№5 · Пробег за один оборот',steps:1}};
-function renderMath(){if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false})}
-function common(t,l,b,back=true,next=true,label='Дальше →'){return `<h1>${t}</h1><div class="lead">${l}</div>${b}<div class="nav">${back?'<button class="btn secondary" onclick="window.goPrev()">Назад</button>':'<span></span>'}${next?`<button id="nextBtn" class="btn primary" onclick="window.goNext()">${label}</button>`:''}</div>`}
+function renderMath(){
+  if(window.renderMathInElement)
+    renderMathInElement(document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'\\[',right:'\\]',display:true},
+        {left:'\\(',right:'\\)',display:false}
+      ],
+      throwOnError:false
+    })
+}function common(t,l,b,back=true,next=true,label='Дальше →'){return `<h1>${t}</h1><div class="lead">${l}</div>${b}<div class="nav">${back?'<button class="btn secondary" onclick="window.goPrev()">Назад</button>':'<span></span>'}${next?`<button id="nextBtn" class="btn primary" onclick="window.goNext()">${label}</button>`:''}</div>`}
 function sidebarHtml(){let out='<div class="sideTitle">Шины</div>';let groups=[['Разбираем условие',[['Введение','intro',0],['Маркировка','intro',1],['Дюймы','intro',5],['Рисунок','intro',7],['Диаметр и радиус','intro',10]]],['Учимся решать',[[`Задание №1`,'lesson',1],[`Задание №2`,'lesson',2],[`Задание №3`,'lesson',3],[`Задание №4`,'lesson',4],[`Задание №5`,'lesson',5]]],['Проверяем себя',[[`Самостоятельный вариант`,'exam',1],[`Результат`,'results',1]]]];groups.forEach(([g,items])=>{out+=`<div class="sideGroup">${g}</div>`;items.forEach(([label,sec,val])=>{let a=false,d=false;if(sec==='intro'){a=state.section==='intro'&&state.intro>=val&&state.intro<val+4;d=state.section!=='intro'||state.intro>val}if(sec==='lesson'){a=state.section==='lesson'&&state.lesson===val;d=(state.section==='lesson'&&state.lesson>val)||['exam','results'].includes(state.section)}if(sec==='exam'){a=state.section==='exam';d=state.section==='results'}if(sec==='results')a=state.section==='results';out+=`<div class="sideItem ${a?'active':''} ${d?'done':''}">${label}</div>`})});return out}
 function updateChrome(){sidebar.innerHTML=sidebarHtml();renderMath()}
 function ogeBase(call=null){return `<div class="stage card" id="ogeStage"><svg id="arrowLayer" class="arrowLayer"><defs><marker id="arrowHead" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#8b68d2"></path></marker></defs><path id="arrowPath" d="" fill="none" stroke="#8b68d2" stroke-width="3" marker-end="url(#arrowHead)"></path></svg><div class="grid2"><div class="ogeText"><p>Автомобильное колесо представляет из себя металлический диск с установленной на него резиновой шиной. Диаметр диска совпадает с диаметром внутреннего отверстия в шине.</p><p>Для маркировки автомобильных шин применяется единая система обозначений. Например, <span id="m195" class="mark">195</span>/<span id="m65" class="mark">65</span> <span id="mR" class="mark">R</span><span id="m15" class="mark">15</span>. Первое число означает ширину шины в миллиметрах (размер B на рис. 2). Второе число — высота боковины H в процентах от ширины шины.</p><p>Например, шина 195/65 R15 имеет B=195 мм и H=195·0,65=126,75 мм.</p><p>Буква R означает, что шина имеет радиальную конструкцию.</p><p>За буквой R следует диаметр диска d в дюймах (<span id="inch" class="mark">в одном дюйме 25,4 мм</span>). Общий диаметр колеса D можно найти, зная диаметр диска и высоту боковины.</p><p>Завод устанавливает на автомобили колёса с шинами 195/60 R16.</p></div><div><div class="figure"><img src="assets/fig1.png"><div class="cap">Рис. 1 · маркировка на шине</div></div><div class="figure" id="fig2box"><img src="assets/fig2.png"><div class="cap">Рис. 2 · B, H, d и D</div></div></div></div>${call?`<div id="callout" class="callout"><h3>${call.head}</h3><p>${call.text}</p>${call.formula?`<div class="formula">$$${call.formula}$$</div>`:''}${call.warn?`<div class="warn">${call.warn}</div>`:''}</div>`:''}</div>`}
@@ -26,6 +35,11 @@ function positionCallout(markId,target){requestAnimationFrame(()=>{let stage=$('
 function norm(v){return String(v??'').trim().replace(',','.').replace(/\s/g,'')}
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function exerciseBlock(q,answer,key,unit='',hint=''){return `<div class="card"><div class="sectionTitle">${q}</div><div class="answerRow"><input id="${key}" inputmode="decimal"><span>${unit}</span><button class="btn primary" onclick="app.checkExercise('${key}','${answer}')">Проверить</button><button class="hintBtn" onclick="app.showHint('${key}','${hint.replace(/'/g,'&#39;')}')">Подсказка</button></div><div id="${key}Fb" class="feedback"></div><div id="${key}Hint"></div></div>`}
+function typesetMath(scope = appEl) {
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    MathJax.typesetPromise([scope]).catch(() => {});
+  }
+}
 function renderIntro(){let st=introSteps[state.intro];crumb.textContent='Шины · Разбираем условие';progressText.textContent=`Введение · ${state.intro+1} из ${introSteps.length}`;progressBar.style.width=`${(state.intro+1)/introSteps.length*100}%`;let body='';
 if(st.type==='read')body=ogeBase()+`<div class="card" style="margin-top:18px"><b>Что ты считаешь важным в этом условии?</b><textarea style="width:100%;min-height:100px;margin-top:10px;border:1px solid var(--line);border-radius:16px;padding:14px" placeholder="Числа, обозначения, факты или мысли..."></textarea><div class="mini">Ответ не проверяется.</div></div>`;
 if(st.type==='call'){body=ogeBase(st);setTimeout(()=>positionCallout(st.mark,st.target),30)}
@@ -1477,7 +1491,8 @@ function renderLesson(){
   }
 
 
-  updateChrome();
+  typesetMath(appEl);
+updateChrome();
 }
 function tableClick(w,c,el,mode,target){
   const table=el.closest("table");
