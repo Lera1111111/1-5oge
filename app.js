@@ -81,10 +81,24 @@ function sidebarHtml(mobile=false){
       if(sec==='results') active=state.section==='results';
 
       const disabled=sec==='results'&&Object.keys(state.examAnswers).length===0;
-      out+=`<button class="sideItem navSideBtn ${active?'active':''} ${done?'done':''}" ${disabled?'disabled':''} onclick="app.navTo('${sec}',${val})">${label}</button>`;
+      out+=`<button type="button" class="sideItem navSideBtn ${active?'active':''} ${done?'done':''}" ${disabled?'disabled':''} data-nav-sec="${sec}" data-nav-val="${val}">${label}</button>`;
     });
   });
   return out;
+}
+
+
+function bindSectionNav(){
+  document.querySelectorAll('[data-nav-sec]').forEach(btn=>{
+    btn.onclick=(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(btn.disabled)return;
+      const sec=btn.dataset.navSec;
+      const val=Number(btn.dataset.navVal);
+      window.app.navTo(sec,val);
+    };
+  });
 }
 
 function updateChrome(){
@@ -93,6 +107,7 @@ function updateChrome(){
   if(mobilePanel){
     mobilePanel.classList.toggle('open',!!state.mobileMenu);
   }
+  bindSectionNav();
   renderMath();
 }
 
@@ -1717,6 +1732,17 @@ function injectV5Styles(){
   style.textContent=`
     .navSideBtn{display:block;width:100%;border:0;text-align:left;font:inherit;cursor:pointer}
     .navSideBtn:disabled{opacity:.45;cursor:not-allowed}
+
+    .navSideBtn{
+      pointer-events:auto!important;
+      position:relative;
+      z-index:3;
+      background:transparent;
+      -webkit-tap-highlight-color:rgba(117,84,197,.12);
+      touch-action:manipulation;
+    }
+    .navSideBtn:not(:disabled):active{background:var(--lav)}
+
     .mobileSectionBar,.mobileNavPanel{display:none}
     .annotatedFigure .figImageWrap{position:relative;display:inline-block;max-width:100%}
     .annotatedFigure img{display:block;max-width:100%;height:auto}
@@ -1792,7 +1818,7 @@ navTo(sec,val){
     if(Object.keys(state.examAnswers).length===0)return;
     state.section='results';
   }
-  this.render();
+  window.app.render();
 },
 examGoto(n){state.examAnswers[state.examQ]=$('#examInput')?.value??state.examAnswers[state.examQ];state.examQ=n;this.render()},examPrev(){state.examAnswers[state.examQ]=$('#examInput')?.value??state.examAnswers[state.examQ];if(state.examQ>1)state.examQ--;this.render()},saveExam(){
   state.examAnswers[state.examQ]=$('#examInput').value;
