@@ -116,10 +116,185 @@ function ovenRenderResults(){
   crumb.textContent='Печь для бани · Результат';progressText.textContent=`${score} из 5`;progressBar.style.width='100%';appEl.innerHTML=common(score===5?'Печь для бани пройдена ✓':'Есть что разобрать',`Результат: ${score} из 5`,`<div class="card"><div class="score">${score} из 5</div>${rows}<div class="nav"><button class="btn secondary" onclick="app.openMode()">Выбрать режим</button><button class="btn primary" onclick="app.ovenRestartExam()">Новый вариант</button></div></div>`,false,false);updateChrome();
 }
 
+let routeApplying = false;
+let lastAppliedRoute = null;
+
+function routeFromState() {
+  if (state.section === 'hub') return '';
+
+  if (state.section === 'mode') {
+    return `#${state.story}`;
+  }
+
+  if (state.section === 'intro') {
+    return `#tires/study/intro/${state.intro + 1}`;
+  }
+
+  if (state.section === 'lesson') {
+    return `#tires/study/${state.lesson}`;
+  }
+
+  if (state.section === 'exam') {
+    return `#tires/exam/${state.examQ}`;
+  }
+
+  if (state.section === 'results') {
+    return '#tires/results';
+  }
+
+  if (state.section === 'ovenIntro') {
+    return `#oven/study/intro/${state.ovenIntro + 1}`;
+  }
+
+  if (state.section === 'ovenLesson') {
+    return `#oven/study/${state.ovenLesson}/${state.ovenVariant + 1}`;
+  }
+
+  if (state.section === 'ovenExam') {
+    return `#oven/exam/${state.ovenExamQ}`;
+  }
+
+  if (state.section === 'ovenResults') {
+    return '#oven/results';
+  }
+
+  return '';
+}
+
+function syncRouteFromState() {
+  const route = routeFromState();
+
+  if (location.hash === route) return;
+
+  const url = location.pathname + location.search + route;
+  history.pushState(null, '', url);
+  lastAppliedRoute = route;
+}
+
+function applyRouteFromAddress() {
+  if (location.hash === lastAppliedRoute) return;
+
+  lastAppliedRoute = location.hash;
+
+  const parts = location.hash
+    .slice(1)
+    .split('/')
+    .filter(Boolean);
+
+  routeApplying = true;
+
+  try {
+    if (!parts.length) {
+      state.story = null;
+      state.section = 'hub';
+      window.app.render();
+      return;
+    }
+
+    const story = parts[0];
+
+    if (!['oven', 'tires'].includes(story)) {
+      state.story = null;
+      state.section = 'hub';
+      window.app.render();
+      return;
+    }
+
+    state.story = story;
+
+    if (parts.length === 1) {
+      state.section = 'mode';
+      window.app.render();
+      return;
+    }
+
+    const mode = parts[1];
+
+    if (story === 'oven') {
+      if (mode === 'study') {
+        if (parts[2] === 'intro') {
+          const step = Number(parts[3] || 1);
+
+          state.section = 'ovenIntro';
+          state.ovenIntro = Math.max(0, Math.min(13, step - 1));
+        } else {
+          const task = Number(parts[2] || 1);
+          const variant = Number(parts[3] || 1);
+
+          state.section = 'ovenLesson';
+          state.ovenLesson = Math.max(1, Math.min(5, task));
+          state.ovenVariant = Math.max(0, Math.min(1, variant - 1));
+        }
+      } else if (mode === 'exam') {
+        if (!Object.keys(state.ovenExamSet).length) {
+          for (let number = 1; number <= 5; number++) {
+            state.ovenExamSet[number] = Math.floor(Math.random() * 2);
+          }
+        }
+
+        state.section = 'ovenExam';
+        state.ovenExamQ = Math.max(
+          1,
+          Math.min(5, Number(parts[2] || 1))
+        );
+      } else if (
+        mode === 'results' &&
+        Object.keys(state.ovenExamSet).length
+      ) {
+        state.section = 'ovenResults';
+      } else {
+        state.section = 'mode';
+      }
+
+      window.app.render();
+      return;
+    }
+
+    if (story === 'tires') {
+      if (mode === 'study') {
+        if (parts[2] === 'intro') {
+          const step = Number(parts[3] || 1);
+
+          state.section = 'intro';
+          state.intro = Math.max(
+            0,
+            Math.min(introSteps.length - 1, step - 1)
+          );
+        } else {
+          state.section = 'lesson';
+          state.lesson = Math.max(
+            1,
+            Math.min(5, Number(parts[2] || 1))
+          );
+          state.lessonStep = 0;
+        }
+      } else if (mode === 'exam') {
+        state.section = 'exam';
+        state.examQ = Math.max(
+          1,
+          Math.min(5, Number(parts[2] || 1))
+        );
+      } else if (
+        mode === 'results' &&
+        Object.keys(state.examAnswers).length
+      ) {
+        state.section = 'results';
+      } else {
+        state.section = 'mode';
+      }
+
+      window.app.render();
+    }
+  } finally {
+    routeApplying = false;
+  }
+}
+
 const baseRender=window.app.render.bind(window.app),basePrev=window.app.prev.bind(window.app),baseNext=window.app.next.bind(window.app),baseNavTo=window.app.navTo.bind(window.app);
 
 Object.assign(window.app,{
   render(){
+     if (!routeApplying) syncRouteFromState();
     if(state.section==='hub')return renderHub();
     if(state.section==='mode')return renderModeSelect();
     if(state.section==='ovenIntro')return ovenRenderIntro();
@@ -165,3 +340,7 @@ Object.assign(window.app,{
 
 window.goNext=()=>window.app.next();
 window.goPrev=()=>window.app.prev();
+window.addEventListener('hashchange', applyRouteFromAddress);
+window.addEventListener('popstate', applyRouteFromAddress);
+
+applyRouteFromAddress();
