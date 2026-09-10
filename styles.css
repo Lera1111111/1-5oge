@@ -11,6 +11,51 @@ h1{font-family:Georgia,serif;font-size:46px;line-height:1.04;margin:0 0 10px;fon
 .gifBox{text-align:center}.gifBox img{max-width:100%;border-radius:18px;border:1px solid var(--line)}.examLayout{display:grid;grid-template-columns:420px minmax(0,1fr);gap:18px}.stickyCondition{position:sticky;top:94px;align-self:start;max-height:calc(100vh - 118px);overflow:auto}.qnav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.qnav button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px 12px;font-weight:800}.qnav button.active{background:var(--purple);color:#fff}.qnav button.done:after{content:' •';color:#59a77d}.reviewRow{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 0}.good{color:#4e9472;font-weight:900}.bad{color:#b7607f;font-weight:900}.score{font-family:Georgia,serif;font-size:46px}.reviewTag{font-size:12px;color:#8d7e9d;margin-left:8px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{display:none}.grid2,.split,.examLayout{grid-template-columns:1fr}.stickyCondition{position:static;max-height:none}.dropGrid{grid-template-columns:1fr 1fr}.main{padding:18px}h1{font-size:38px}}
 
+/* Общий каталог сюжетов и выбор режима */
+body.hubMode .layout{grid-template-columns:1fr}
+body.hubMode .sidebar,body.hubMode .topline,body.hubMode .bar{display:none}
+body.hubMode .main{max-width:1180px;padding-top:56px}
+.hubEyebrow{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#a184c7;margin-bottom:12px}
+.hubLead{max-width:720px;color:var(--muted);font-size:18px;line-height:1.55;margin:0 0 28px}
+.storyGrid,.modeGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.storyCard,.modeCard{min-height:260px;border:1px solid var(--line);border-radius:26px;background:var(--card);box-shadow:var(--shadow);padding:24px;text-align:left;display:flex;flex-direction:column;transition:.2s transform,.2s box-shadow,.2s border-color}
+button.storyCard,button.modeCard{cursor:pointer}
+button.storyCard:hover,button.modeCard:hover{transform:translateY(-3px);border-color:#cdb9e8;box-shadow:0 20px 48px rgba(90,64,120,.14)}
+.storyCard.primaryStory{background:linear-gradient(145deg,#fffdfb 0%,#f3ebfc 100%)}
+.storyTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.storyIcon{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#9273dd,#7451c4);color:white;display:grid;place-items:center;font-size:25px;font-weight:900}
+.storyStatus{padding:7px 11px;border-radius:999px;background:var(--green);color:#4e9472;font-weight:900;font-size:12px}
+.storyCard h2,.modeCard h2{font-family:Georgia,serif;font-size:32px;font-weight:500;margin:auto 0 8px}
+.storyCard p,.modeCard p{color:var(--muted);line-height:1.5;margin:0}
+.storyNumbers{display:flex;gap:6px;margin-top:18px}
+.storyNumbers span{width:31px;height:31px;border-radius:10px;background:var(--lav);color:var(--purple);display:grid;place-items:center;font-weight:900}
+.modeCard .modeNo{color:#a184c7;font-size:12px;font-weight:900;letter-spacing:.1em}
+.modeCard .modeAction{margin-top:20px;color:var(--purple);font-weight:900}
+.backLink{border:0;background:transparent;color:var(--purple);font-weight:900;padding:0;margin-bottom:24px}
+.archiveOnly{margin-top:18px;padding:12px 14px;border-radius:15px;background:var(--green);color:#4e8067;font-size:13px;font-weight:800}
+
+/* Печи: новые страницы на языке исходного дизайна */
+.sourceText{font-family:Georgia,serif;font-size:17px;line-height:1.55}
+.sourceText p{margin:0 0 12px}
+.sourceTable{margin:14px 0;font-family:Inter,Arial,sans-serif}
+.sourceTable th,.sourceTable td{padding:9px 7px}
+.sourceMark{border-radius:7px;padding:1px 3px;font-weight:700}
+.sourceMark.active{background:var(--lav);color:var(--purple)}
+.sourceMark.cost.active{background:var(--pink);color:#925a74}
+.variantTabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.variantTab{border:1px solid #d9c8f1;background:white;color:var(--purple);border-radius:14px;padding:10px 14px;font-weight:900}
+.variantTab.active{background:var(--lav);border-color:#baa4e3}
+.ovenTaskText{font-family:Georgia,serif;font-size:19px;line-height:1.55;margin:14px 0}
+.ovenTaskImage{display:block;width:100%;max-height:560px;object-fit:contain;object-position:left top;border:1px solid var(--line);border-radius:18px;background:white;margin:14px 0}
+.guideSteps{display:grid;gap:9px;margin:16px 0}
+.guideStep{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--lav);border-radius:15px;padding:12px 14px;color:#66499f;line-height:1.5}
+.guideStep b{width:30px;height:30px;border-radius:10px;background:var(--purple);color:white;display:grid;place-items:center}
+.matchMini{margin:14px 0;min-width:500px}
+.matchMini th{white-space:nowrap}
+.catalogSide{display:block;width:100%;border:0;background:transparent;text-align:left}
+.ovenSourceSticky{position:sticky;top:94px;align-self:start;max-height:calc(100vh - 118px);overflow:auto}
+@media(max-width:760px){.storyGrid,.modeGrid{grid-template-columns:1fr}.storyCard,.modeCard{min-height:220px}.ovenSourceSticky{position:static;max-height:none}.matchMini{min-width:560px}}
+
 /* v3 refinements */
 td.table-wrong{
   background:#f9e7ef !important;

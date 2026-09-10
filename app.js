@@ -1,6 +1,6 @@
 const $=s=>document.querySelector(s);
 const appEl=$('#app'),sidebar=$('#sidebar'),crumb=$('#crumb'),progressText=$('#progressText'),progressBar=$('#progressBar');
-const state={section:'intro',intro:0,lesson:1,lessonStep:0,hints:{},examQ:1,examAnswers:{},examReviewed:{},reviewTarget:null,newMark:{},radiusFormulaCorrect:false,tapDragSelected:null,mobileMenu:false};
+const state={section:'hub',story:null,intro:0,lesson:1,lessonStep:0,hints:{},examQ:1,examAnswers:{},examReviewed:{},reviewTarget:null,newMark:{},radiusFormulaCorrect:false,tapDragSelected:null,mobileMenu:false,ovenIntro:0,ovenLesson:1,ovenVariant:0,ovenHints:{},ovenCompleted:{},ovenExamQ:1,ovenExamSet:{},ovenAnswers:{},ovenReviewed:{}};
 const introSteps=[
 {t:'Сначала просто прочитай условие',l:'Пока ничего не нужно запоминать. Прочитай условие и попробуй понять, какая информация здесь может пригодиться для решения задач.',type:'read'},
 {t:'Смотрим на 195',l:'Перечитываем тот же текст и связываем число с рисунком.',type:'call',mark:'m195',head:'195 — ширина шины',text:'Первое число показывает ширину шины в миллиметрах.',formula:'B=195\\text{ мм}',target:'B'},
@@ -34,7 +34,7 @@ function renderMath(){
       <span class="mobileWhere">${crumb?.textContent||'Шины'}</span>
     </div>
     <div id="mobileNavPanel" class="mobileNavPanel ${state.mobileMenu?'open':''}">
-      ${sidebarHtml(true)}
+      ${(window.currentSidebarHtml||sidebarHtml)(true)}
     </div>`;
   return `${mobileNav}<h1>${t}</h1><div class="lead">${l}</div>${b}<div class="nav">${back?'<button class="btn secondary" onclick="window.goPrev()">Назад</button>':'<span></span>'}${next?`<button id="nextBtn" class="btn primary" onclick="window.goNext()">${label}</button>`:''}</div>`;
 }
@@ -102,7 +102,7 @@ function bindSectionNav(){
 }
 
 function updateChrome(){
-  sidebar.innerHTML=sidebarHtml(false);
+  sidebar.innerHTML=(window.currentSidebarHtml||sidebarHtml)(false);
   const mobilePanel=document.getElementById('mobileNavPanel');
   if(mobilePanel){
     mobilePanel.classList.toggle('open',!!state.mobileMenu);
